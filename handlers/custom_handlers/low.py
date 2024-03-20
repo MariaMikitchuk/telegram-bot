@@ -1,7 +1,8 @@
+from telebot.types import Message
+
+from keyboards.reply.low_nutrient import low_reply_nutrient
 from loader import bot
 from states.low_state import LowState
-from telebot.types import Message
-from keyboards.reply.low_nutrient import low_reply_nutrient
 
 
 @bot.message_handler(commands=['low'])
