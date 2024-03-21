@@ -14,7 +14,6 @@ class ModelBase(pw.Model):
 
 
 class History(ModelBase):
-    function = pw.TextField()
-    nutrient = pw.TextField()
-    value = pw.IntegerField()
-    dish = pw.TextField()
+    user_id = pw.CharField()
+    message = pw.CharField()
+    created_at = pw.DateTimeField()
