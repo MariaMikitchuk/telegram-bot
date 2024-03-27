@@ -1,5 +1,5 @@
 import requests
-import json
+
 
 url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/495996/information"
 

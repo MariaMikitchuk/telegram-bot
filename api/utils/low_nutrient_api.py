@@ -34,7 +34,6 @@ def _get_min_value(method: str, url: str, headers: Dict, params: Dict, min_value
         params["minCalcium"] = min_value
     elif nutrient == 'phosphorus':
         params["minPhosphorus"] = min_value
-    print(params)
 
     response = func(method=method, url=url, headers=headers, params=params, timeout=timeout).json()
     max_dishes = min(10, len(response))
