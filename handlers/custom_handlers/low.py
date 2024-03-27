@@ -1,3 +1,4 @@
+from telebot import types
 from telebot.types import Message
 
 from api.core import url, headers, params, url_dish, params_dish
@@ -23,7 +24,7 @@ def get_nutrient(message: Message):
     chat_id = message.chat.id
     if message.text.strip().lower() in nutrient_mapping:
         nutrient = nutrient_mapping[message.text.strip().lower()]
-        bot.send_message(user_id, 'Спасибо, записал.\nТеперь введи его количество в блюде')
+        bot.send_message(user_id, 'Спасибо, записал.\nТеперь введи его количество в блюде', reply_markup=types.ReplyKeyboardRemove())
         bot.set_state(user_id, LowState.value, chat_id)
         with bot.retrieve_data(user_id, chat_id) as data:
             data['nutrient'] = nutrient
@@ -67,6 +68,7 @@ def get_dish(message: Message):
         bot.send_message(user_id, 'Пожалуйста, введи номер одного из предложенных блюд')
     dish_id = bot.id_dict.get(data['dish'])
     url_id = url_dish.format(dish_id)
+    print(url_id)
     summary, link = main_api.dish_low_summary("GET", url_id, headers, params_dish)
     bot.send_message(user_id, summary)
     bot.send_message(user_id, f'Рецепт ищи по ссылке {link}')

@@ -1,6 +1,12 @@
 from typing import Dict
+from bs4 import BeautifulSoup
 
 import requests
+
+def remove_html_tags(text):
+    soup = BeautifulSoup(text, 'html.parser')
+    return soup.get_text()
+
 
 def _make_response(method: str , url: str, headers: Dict, params: Dict, timeout: int = 10, success=200):
 
@@ -38,22 +44,23 @@ def _get_min_value(method: str, url: str, headers: Dict, params: Dict, min_value
     return response, titles, id_dict, max_dishes
 
 
-def _get_min_summary(method: str, url: str, headers: Dict, timeout: int = 10, func=_make_response):
+def _get_min_summary(method: str, url: str, headers: Dict, params: Dict, timeout: int = 10, func=_make_response):
     response = func(method=method, url=url, headers=headers, params=params, timeout=timeout).json()
     summary = response["summary"]
+    cleared_summary = remove_html_tags(summary)
     link = response["sourceUrl"]
-    return summary, link
+    return cleared_summary, link
 
 
 class SiteApiInterface():
 
     @staticmethod
     def get_min_nutr():
-        return _get_min_value
+        return _get_min_value()
 
     @staticmethod
     def get_min_dish():
-        return _get_min_summary
+        return _get_min_summary()
 
 if __name__ == '__main__':
     _make_response()
