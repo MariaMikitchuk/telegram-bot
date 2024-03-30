@@ -12,6 +12,9 @@ def low_func(message: Message) -> None:
     user_id = message.from_user.id
     chat_id = message.chat.id
     bot.set_state(user_id, LowState.nutrient, chat_id)
+    # TODO Не забывайте сохранять историю команд в БД, для работы с БД рекомендую peewee - будет проще делать запросы,
+    #  надо только немного вникнуть. Либо делать запросы на сыром SQL, если вам это ближе. Не забывайте привязывать
+    #  данные к id пользователя, иначе это будет не многопользовательский бот.
     bot.send_message(user_id, f'Choose a nutrient, the minimum amount of which should contain a dish in grams\n- '
                                            f'protein\n- '
                                            f'carbs\n- calcium\n- phosphorus', reply_markup=low_reply_nutrient())
@@ -25,6 +28,8 @@ def get_nutrient(message: Message):
         nutrient = message.text.strip().lower()
         bot.send_message(user_id, 'Thanks, I wrote it down.\nNow enter the amount of it in the dish in grams or press "exit" to choose another '
                                   'nutrient',
+                         # TODO превышение ограничения на длину строки кода в 120 символов - разбейте строку на две
+                         #  части (и далее по всему проекту поправьте, пожалуйста)
                          reply_markup=exit_to_nutrient_markup())
         bot.set_state(user_id, LowState.value, chat_id)
         with bot.retrieve_data(user_id, chat_id) as data:
