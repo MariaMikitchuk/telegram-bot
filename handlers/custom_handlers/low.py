@@ -1,7 +1,7 @@
 from telebot.types import Message
 
 from api import main_api
-from api.core import url, headers, params, url_dish, params_dish
+from api.core import url, headers, url_dish, params_dish
 from keyboards.reply.low_nutrient_markup import low_reply_nutrient, nutrient_mapping, \
     exit_to_nutrient_markup
 from loader import bot
