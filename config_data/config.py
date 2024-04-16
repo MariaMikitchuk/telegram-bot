@@ -11,5 +11,6 @@ RAPID_API_KEY = os.getenv('RAPID_API_KEY')
 RAPID_API_HOST = os.getenv('RAPID_API_HOST')
 DEFAULT_COMMANDS = (
     ('start', 'Запустить бота'),
-    ('help', 'Вывести справку')
+    ('help', 'Вывести справку'),
+    ('low', 'Запрос с минимальным параметром'),
 )
