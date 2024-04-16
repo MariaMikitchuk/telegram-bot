@@ -2,8 +2,9 @@ from telebot.types import Message
 
 from api import main_api
 from api.core import url, headers, url_dish, params_dish
-from keyboards.reply.low_nutrient_markup import low_reply_nutrient, nutrient_mapping, \
-    exit_to_nutrient_markup
+from keyboards.reply.low_nutrient_markup import low_reply_nutrient, nutrient_mapping
+from keyboards.reply.exit import exit_to_nutrient_markup
+
 from loader import bot
 from states.low_state import LowState
 from database.core import crud

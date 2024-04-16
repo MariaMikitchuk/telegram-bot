@@ -12,7 +12,7 @@ def remove_html_tags(text):
 def _make_response(method: str, url: str, headers: Dict, params: Dict,
                    timeout: int = 10, success=200):
     response = requests.request(method, url, headers=headers, params=params,
-        timeout=timeout)
+                                timeout=timeout)
 
     status_code = response.status_code
 
