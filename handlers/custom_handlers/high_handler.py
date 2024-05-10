@@ -1,5 +1,7 @@
 from telebot.types import Message
 
+from api import main_api
+from api.core import url, headers, params_dish, url_dish
 from database.core import crud
 from keyboards.reply.exit import exit_to_nutrient_markup
 from keyboards.reply.high_nutrient_markup import high_reply_nutrient, nutrient_mapping
@@ -53,7 +55,7 @@ def get_value(message: Message):
         with bot.retrieve_data(user_id, chat_id) as data:
             data['value'] = message.text
             crud.create({"user_id": user_id, "message": message.text})
-            response, titles, id_dict, max_dishes = main_api.dish_low_nutrient(
+            response, titles, id_dict, max_dishes = main_api.dish_high_nutrient(
                 "GET", url, headers, params_dish, data['value'], data['nutrient']
             )
             if response:
