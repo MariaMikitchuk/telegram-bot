@@ -1,29 +1,29 @@
 from telebot.types import Message
 
 from api import main_api
-from api.core import url, headers, url_dish, params_dish
-from keyboards.reply.low_nutrient_markup import low_reply_nutrient, nutrient_mapping, \
-    exit_to_nutrient_markup
-from loader import bot
-from states.low_state import LowState
+from api.core import url, headers, params_dish, url_dish
 from database.core import crud
+from keyboards.reply.exit import exit_to_nutrient_markup
+from keyboards.reply.high_nutrient_markup import high_reply_nutrient, nutrient_mapping
+from loader import bot
+from states.high_state import HighState
 
 
-@bot.message_handler(commands=['low'])
-def low_func(message: Message) -> None:
+@bot.message_handler(commands=['high'])
+def high_func(message: Message) -> None:
     user_id = message.from_user.id
     chat_id = message.chat.id
-    bot.set_state(user_id, LowState.nutrient, chat_id)
+    bot.set_state(user_id, HighState.nutrient, chat_id)
     bot.send_message(user_id,
-                     f'Choose a nutrient, the minimum amount of which should contain '
+                     f'Choose a nutrient, the maximum amount of which should contain '
                      f'a dish in grams\n- '
-                     f'protein\n- '
-                     f'carbs\n- calcium\n- phosphorus',
-                     reply_markup=low_reply_nutrient())
-    crud.create({"user_id": user_id, "message": "/low"})
+                     f'sugar\n- '
+                     f'fat\n- cholesterol\n- carbs',
+                     reply_markup=high_reply_nutrient())
+    crud.create({"user_id": user_id, "message": "/high"})
 
 
-@bot.message_handler(state=LowState.nutrient)
+@bot.message_handler(state=HighState.nutrient)
 def get_nutrient(message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
@@ -33,7 +33,7 @@ def get_nutrient(message: Message):
                          'Thanks, I wrote it down.\nNow enter the amount of it in the '
                          'dish in grams or press "exit" to choose another '
                          'nutrient', reply_markup=exit_to_nutrient_markup())
-        bot.set_state(user_id, LowState.value, chat_id)
+        bot.set_state(user_id, HighState.value, chat_id)
         with bot.retrieve_data(user_id, chat_id) as data:
             data['nutrient'] = nutrient
             crud.create({"user_id": user_id, "message": message.text})
@@ -41,20 +41,21 @@ def get_nutrient(message: Message):
         bot.send_message(message.from_user.id, 'Please press one of the buttons')
 
 
-@bot.message_handler(state=LowState.value)
+@bot.message_handler(state=HighState.value)
 def get_value(message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id
     if message.text.strip().lower() == 'exit':
         crud.create({"user_id": user_id, "message": message.text})
-        bot.set_state(user_id, LowState.nutrient, chat_id)
-        bot.send_message(user_id, 'Choose nutrient:', reply_markup=low_reply_nutrient())
+        bot.set_state(user_id, HighState.nutrient, chat_id)
+        bot.send_message(user_id, 'Choose nutrient:',
+                         reply_markup=high_reply_nutrient())
     elif message.text.isdigit():
-        bot.set_state(user_id, LowState.dish, chat_id)
+        bot.set_state(user_id, HighState.dish, chat_id)
         with bot.retrieve_data(user_id, chat_id) as data:
             data['value'] = message.text
             crud.create({"user_id": user_id, "message": message.text})
-            response, titles, id_dict, max_dishes = main_api.dish_low_nutrient(
+            response, titles, id_dict, max_dishes = main_api.dish_high_nutrient(
                 "GET", url, headers, params_dish, data['value'], data['nutrient']
             )
             if response:
@@ -68,12 +69,12 @@ def get_value(message: Message):
                 bot.send_message(user_id,
                                  "Sorry, I couldn't find the dishes according to your "
                                  "request. Enter another quantity:")
-                bot.set_state(user_id, LowState.value, chat_id)
+                bot.set_state(user_id, HighState.value, chat_id)
     else:
         bot.send_message(message.from_user.id, 'The quantity can be a positive number')
 
 
-@bot.message_handler(state=LowState.dish)
+@bot.message_handler(state=HighState.dish)
 def get_dish(message: Message):
     user_id = message.from_user.id
     chat_id = message.chat.id

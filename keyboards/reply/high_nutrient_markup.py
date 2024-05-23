@@ -1,9 +1,9 @@
 from telebot import types
 
-nutrient_mapping = ['protein', 'carbs', 'calcium', 'phosphorus']
+nutrient_mapping = ['sugar', 'fat', 'cholesterol', 'carbs']
 
 
-def low_reply_nutrient():
+def high_reply_nutrient():
     markup = types.ReplyKeyboardMarkup()
     row_1 = []
     row_2 = []
@@ -16,6 +16,4 @@ def low_reply_nutrient():
     markup.row(*row_1)
     markup.row(*row_2)
     return markup
-
-
 

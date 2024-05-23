@@ -1,4 +1,4 @@
-from api.utils.low_nutrient_api import SiteApiInterface
+from api.utils.nutrient_api import SiteApiInterface
 from config_data.config import RAPID_API_HOST, RAPID_API_KEY
 
 headers = {"X-RapidAPI-Key": RAPID_API_KEY, "X-RapidAPI-Host": RAPID_API_HOST}
