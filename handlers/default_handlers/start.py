@@ -20,5 +20,7 @@ def hello_handler(message):
     bot.send_message(message.from_user.id,
                      'I am a bot that will help you find recipes for a given nutrient '
                      'content.\nchoose search parameters:\n- '
-                     'with the minimum amount(low)\n- with the maximum amount(high)...',
+                     'with the minimum amount(low)\n- with the maximum amount('
+                     'high)...\nIf you want to view the request history press '
+                     '"history" button',
                      reply_markup=keyboard)

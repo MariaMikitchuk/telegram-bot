@@ -11,3 +11,4 @@ if __name__ == "__main__":
     crud.create()
     crud.retrieve()
 
+db.close()
