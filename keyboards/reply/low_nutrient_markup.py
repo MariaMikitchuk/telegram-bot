@@ -4,7 +4,7 @@ nutrient_mapping = ['protein', 'carbs', 'calcium', 'phosphorus']
 
 
 def low_reply_nutrient():
-    markup = types.ReplyKeyboardMarkup()
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     row_1 = []
     row_2 = []
     for name in nutrient_mapping:
