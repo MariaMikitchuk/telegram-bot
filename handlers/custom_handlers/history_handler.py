@@ -3,14 +3,11 @@ from telebot.types import Message
 from database.core import crud
 from database.models import History
 from loader import bot
-from states.history_state import HistoryState
 
 
 @bot.message_handler(commands=['history'])
 def history_func(message: Message) -> None:
     user_id = message.from_user.id
-    chat_id = message.chat.id
-    bot.set_state(user_id, HistoryState, chat_id)
     queries = (History.select().where(History.user_id == user_id).order_by(
         History.created_at.desc()).limit(10))
     history = "\n".join(

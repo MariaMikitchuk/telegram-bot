@@ -22,5 +22,6 @@ def hello_handler(message):
                      'content.\nchoose search parameters:\n- '
                      'with the minimum amount(low)\n- with the maximum amount('
                      'high)...\nIf you want to view the request history press '
-                     '"history" button',
+                     '"history" button\nAlso you can cancel any ongoing operation by '
+                     'sending /cancel.',
                      reply_markup=keyboard)
