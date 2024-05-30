@@ -12,6 +12,17 @@ from states.low_state import LowState
 from database.core import crud
 
 
+@bot.message_handler(state='*', commands=['cancel'])
+def cancel_def(message: Message):
+    """
+    Cancel state
+    """
+    bot.send_message(message.chat.id, 'Your operation was cancelled\nPlease choose '
+                                      'another command',
+                     reply_markup=command_markup())
+    bot.delete_state(message.from_user.id, message.chat.id)
+
+
 @bot.message_handler(commands=['low'])
 def low_func(message: Message) -> None:
     user_id = message.from_user.id
