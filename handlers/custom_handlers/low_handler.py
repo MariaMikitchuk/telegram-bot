@@ -2,12 +2,25 @@ from telebot.types import Message
 
 from api import main_api
 from api.core import url, headers, url_dish, params_dish
+from keyboards.reply.commands import command_markup
+from keyboards.reply.finish_markup import finish_markup
 from keyboards.reply.low_nutrient_markup import low_reply_nutrient, nutrient_mapping
 from keyboards.reply.exit import exit_to_nutrient_markup
 
 from loader import bot
 from states.low_state import LowState
 from database.core import crud
+
+
+@bot.message_handler(state='*', commands=['cancel'])
+def cancel_def(message: Message):
+    """
+    Cancel state
+    """
+    bot.send_message(message.chat.id, 'Your operation was cancelled\nPlease choose '
+                                      'another command',
+                     reply_markup=command_markup())
+    bot.delete_state(message.from_user.id, message.chat.id)
 
 
 @bot.message_handler(commands=['low'])
@@ -56,8 +69,7 @@ def get_value(message: Message):
             data['value'] = message.text
             crud.create({"user_id": user_id, "message": message.text})
             response, titles, id_dict, max_dishes = main_api.dish_low_nutrient(
-                "GET", url, headers, params_dish, data['value'], data['nutrient']
-            )
+                "GET", url, headers, params_dish, data['value'], data['nutrient'])
             if response:
                 bot.id_dict = id_dict
                 bot.max_dishes = max_dishes
@@ -91,7 +103,20 @@ def get_dish(message: Message):
             bot.send_message(user_id, summary)
             bot.send_message(user_id,
                              f'Search for the recipe by following the link {link}')
-            bot.set_state(user_id, None, chat_id)
+            bot.send_message(user_id, 'Enter another number of the suggested dishes '
+                                      'or press "finish" to create a new request',
+                             reply_markup=finish_markup())
+            bot.set_state(user_id, LowState.dish, chat_id)
+    elif message.text.lower() == 'finish':
+        bot.set_state(user_id, None, chat_id)
+        bot.send_message(user_id, 'Please choose search parameters:\n- '
+                                  'with the minimum amount(low)\n- with the maximum '
+                                  'amount('
+                                  'high)...\nIf you want to view the request history '
+                                  'press '
+                                  '"history" button', reply_markup=command_markup())
     else:
         bot.send_message(user_id,
                          'Please enter the number of one of the suggested dishes')
+
+

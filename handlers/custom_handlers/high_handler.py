@@ -3,7 +3,9 @@ from telebot.types import Message
 from api import main_api
 from api.core import url, headers, params_dish, url_dish
 from database.core import crud
+from keyboards.reply.commands import command_markup
 from keyboards.reply.exit import exit_to_nutrient_markup
+from keyboards.reply.finish_markup import finish_markup
 from keyboards.reply.high_nutrient_markup import high_reply_nutrient, nutrient_mapping
 from loader import bot
 from states.high_state import HighState
@@ -91,7 +93,19 @@ def get_dish(message: Message):
             bot.send_message(user_id, summary)
             bot.send_message(user_id,
                              f'Search for the recipe by following the link {link}')
-            bot.set_state(user_id, None, chat_id)
+            bot.send_message(user_id, 'Enter another number of the suggested dishes '
+                                      'or press "finish" to create a new request',
+                             reply_markup=finish_markup())
+            bot.set_state(user_id, HighState.dish,
+                          chat_id)
+    elif message.text.lower() == 'finish':
+        bot.set_state(user_id, None, chat_id)
+        bot.send_message(user_id, 'Please choose search parameters:\n- '
+                                  'with the minimum amount(low)\n- with the maximum '
+                                  'amount('
+                                  'high)...\nIf you want to view the request history '
+                                  'press '
+                                  '"history" button', reply_markup=command_markup())
     else:
         bot.send_message(user_id,
                          'Please enter the number of one of the suggested dishes')
